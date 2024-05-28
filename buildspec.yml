@@ -1,0 +1,28 @@
+version: 0.2
+
+phases:
+  install:
+    runtime-versions:
+      docker: 19
+  pre_build:
+    commands:
+      - echo Logging in to Amazon ECR...
+      - aws ecr get-login-password --region $AWS_DEFAULT_REGION | docker login --username AWS --password-stdin <your-account-id>.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com
+      - echo Build started on `date`
+  build:
+    commands:
+      - echo Building the Docker image...
+      - docker build -t your-image-name .
+      - docker tag your-image-name:latest <your-account-id>.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/your-repo-name:latest
+      - echo Pushing the Docker image to ECR...
+      - docker push <your-account-id>.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/your-repo-name:latest
+  post_build:
+    commands:
+      - echo Build completed on `date`
+      - echo Copying static files to S3...
+      - aws s3 cp static/index.html s3://your-bucket-name/index.html
+      - echo Pulling Docker image from ECR...
+      - aws ecr get-login-password --region $AWS_DEFAULT_REGION | docker login --username AWS --password-stdin <your-account-id>.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com
+      - docker pull <your-account-id>.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/your-repo-name:latest
+      - echo Running Docker container...
+      - docker run -d -p 80:80 <your-account-id>.dkr.ecr.$AWS_DEFAULT_REGION.amazonaws.com/your-repo-name:latest
