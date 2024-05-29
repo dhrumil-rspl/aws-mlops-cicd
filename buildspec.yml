@@ -9,10 +9,11 @@ phases:
   build:
     commands:
       - python ml_script.py
-      - docker build -t your-docker-image .
-      - docker tag your-docker-image:latest your-docker-repo/your-docker-image:latest
+      - aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 991762130028.dkr.ecr.us-east-1.amazonaws.com
+      - docker build -t mlops1234 .
+      - docker tag mlops1234:latest 991762130028.dkr.ecr.us-east-1.amazonaws.com/mlops1234:latest
       - $(aws ecr get-login --no-include-email --region your-region)
-      - docker push your-docker-repo/your-docker-image:latest
+      - docker push 991762130028.dkr.ecr.us-east-1.amazonaws.com/mlops1234:latest
 artifacts:
   files:
     - '**/*'
