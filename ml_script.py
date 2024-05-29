@@ -18,4 +18,4 @@ model.fit(X_train, y_train)
 # Save model to S3
 s3 = boto3.client('s3')
 joblib.dump(model, 'model.pkl')
-s3.upload_file('model.pkl', 'your-s3-bucket-name', 'model.pkl')
+s3.upload_file('model.pkl', 'mlops1234', 'model.pkl')
