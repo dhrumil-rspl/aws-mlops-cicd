@@ -9,5 +9,8 @@ RUN pip install --no-cache-dir -r /app/requirements.txt
 COPY . /app
 WORKDIR /app
 
+# Ensure model.pkl is copied
+COPY model.pkl /app/
+
 # Command to run the application
 CMD ["python", "app.py"]
