@@ -9,7 +9,6 @@ phases:
   build:
     commands:
       - python ml_script.py
-      - mv model.pkl .
       - aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 991762130028.dkr.ecr.us-east-1.amazonaws.com
       - docker build -t mlops1234 .
       - docker tag mlops1234:latest 991762130028.dkr.ecr.us-east-1.amazonaws.com/mlops1234:latest
