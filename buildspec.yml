@@ -9,10 +9,13 @@ phases:
   build:
     commands:
       - python ml_script.py
+      - mv model.pkl .
       - aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 991762130028.dkr.ecr.us-east-1.amazonaws.com
       - docker build -t mlops1234 .
       - docker tag mlops1234:latest 991762130028.dkr.ecr.us-east-1.amazonaws.com/mlops1234:latest
       - docker push 991762130028.dkr.ecr.us-east-1.amazonaws.com/mlops1234:latest
+      - echo "Triggering SSM document..."
+      - aws ssm send-command --document-name "RunDeployScript" --targets "Key=tag:Name,Values=mlops1234" --region us-east-1
 artifacts:
   files:
     - '**/*'
